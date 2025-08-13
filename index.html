@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="  تطوير الموقع بواصة مصعب خلف  لايا استفسار او خلل  تواصل وتساب  +994401888888">
-  <meta property="og:description" content="  تم تطوير الموقع بواصة مصعب خلف  لايا استفسار او خلل  تواصل وتساب  +994401888888">
-  <meta property="og:image" content="https://d.top4top.io/p_3512icqfv1.jpg">
-  <meta property="og:url" content="https://example.com">
-  <meta property="og:type" content="website">
+<meta property="og:title" content="  تطوير الموقع بواصة مصعب خلف  لايا استفسار او خلل  تواصل وتساب  +994401888888">
+<meta property="og:description" content="  تم تطوير الموقع بواصة مصعب خلف  لايا استفسار او خلل  تواصل وتساب  +994401888888">
+<meta property="og:image" content="https://d.top4top.io/p_3512icqfv1.jpg">
+<meta property="og:url" content="https://example.com">
+<meta property="og:type" content="website">
 <title>متجر  XIX</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
 <style>
@@ -78,7 +78,7 @@
 </div>
 
 <script>
- const productsData = [
+const productsData = [
   { id: 1, title: 'استرجاع شام كاش', price: 30.00, img: 'https://f.top4top.io/p_3512o1stv1.jpg' },
   { id: 2, title: 'طريقة استرجاع حسابات الشام', price: 100.00, img: 'https://f.top4top.io/p_3512o1stv1.jpg' },
   { id: 3, title: 'فك حظر تيك توك', price: 3.00, img: 'https://j.top4top.io/p_3512tjkcr1.jpg' },
@@ -88,7 +88,6 @@
   { id: 7, title: 'استرجاع صور محذوفه', price: 51.99, img: 'https://a.top4top.io/p_3512p1gzm1.jpg' },
   { id: 8, title: 'طلب حل ايا مشكله', price: 0.99, img: 'https://f.top4top.io/p_35120u6bd1.jpg' }
 ];
-
 
 const ownerEmail = 'uusu.06@gmail.com';
 let currentProduct = null;
@@ -186,8 +185,16 @@ function sendOrder() {
     `الاسم: ${customerName}\n` +
     `واتساب: ${customerWhatsApp}`
   );
-  window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ownerEmail)}&su=${subject}&body=${body}`, '_blank');
-  
+
+  // رابط Gmail للتطبيق على الهاتف
+  const gmailAppLink = `googlegmail://co?to=${encodeURIComponent(ownerEmail)}&subject=${subject}&body=${body}`;
+
+  if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    window.location.href = gmailAppLink;
+  } else {
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ownerEmail)}&su=${subject}&body=${body}`, '_blank');
+  }
+
   const order = {
     product: currentProduct.title,
     price: currentProduct.price.toFixed(2),
@@ -232,10 +239,6 @@ window.onload = () => {
   renderProducts();
   updateCartCount();
 };
-</script>
-</body>
-</html>
-
 </script>
 </body>
 </html>
