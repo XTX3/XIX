@@ -11,6 +11,7 @@
 <title>متجر  XIX</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
 <style>
+  /* نفس التنسيق الأصلي بدون أي تعديل */
   :root {
     --accent: #007bff;
     --bg: #f6f8fb;
@@ -60,6 +61,195 @@
 
 <div class="overlay" id="orderPopup">
   <div class="popup">
+    <button class="close-btn" onclick="closeOrderPopup()">×</button>
+    <h3 id="popupTitle">طلب المنتج</h3>
+    <div id="stepContent"></div>
+    <div class="checkmark" id="checkmark">
+      <svg viewBox="0 0 52 52"><path d="M14 27 l7 7 l17 -17"></path></svg>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ordersListPopup" style="display:none;">
+  <div class="popup" >
+    <button class="close-btn" onclick="closeOrdersPopup()">×</button>
+    <h3>الطلبات المرسلة</h3>
+    <div id="ordersList" class="orders-list">لا توجد طلبات حتى الآن.</div>
+  </div>
+</div>
+
+<script>
+const productsData = [
+  { id: 1, title: 'استرجاع شام كاش', price: 30.00, img: 'https://f.top4top.io/p_3512o1stv1.jpg' },
+  { id: 2, title: 'طريقة استرجاع حسابات الشام', price: 100.00, img: 'https://f.top4top.io/p_3512o1stv1.jpg' },
+  { id: 3, title: 'فك حظر تيك توك', price: 3.00, img: 'https://j.top4top.io/p_3512tjkcr1.jpg' },
+  { id: 4, title: 'واتساب معدل', price: 3.00, img: 'https://l.top4top.io/p_3512bcblf1.jpg' },
+  { id: 5, title: 'فك حضر واتساب', price: 5.00, img: 'https://j.top4top.io/p_3512i415e1.jpg' },
+  { id: 6, title: 'استرجاع بريد الاكتروني', price: 20.00, img: 'https://c.top4top.io/p_3512g2d7j1.jpg' },
+  { id: 7, title: 'استرجاع صور محذوفه', price: 51.99, img: 'https://a.top4top.io/p_3512p1gzm1.jpg' },
+  { id: 8, title: 'طلب حل ايا مشكله', price: 0.99, img: 'https://f.top4top.io/p_35120u6bd1.jpg' }
+];
+
+const ownerEmail = 'uusu.06@gmail.com';
+const ownerWhatsApp = '+994401888888';
+let currentProduct = null;
+let currentStep = 1;
+let customerName = '';
+let customerWhatsApp = '';
+let sentOrders = JSON.parse(localStorage.getItem('sentOrders')) || [];
+
+function renderProducts() {
+  const productsEl = document.getElementById('products');
+  productsEl.innerHTML = '';
+  productsData.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.title}" />
+      <h4>${p.title}</h4>
+      <div class="price">${p.price.toFixed(2)} USD</div>
+      <button class="btn" onclick="startOrder(${p.id})">أضف للسلة</button>
+    `;
+    productsEl.appendChild(card);
+  });
+}
+
+function startOrder(productId) {
+  currentProduct = productsData.find(p => p.id === productId);
+  currentStep = 1;
+  customerName = '';
+  customerWhatsApp = '';
+  document.getElementById('checkmark').style.display = 'none';
+  document.getElementById('stepContent').style.display = 'block';
+  showStep();
+  document.getElementById('orderPopup').style.display = 'flex';
+}
+
+function closeOrderPopup() {
+  document.getElementById('orderPopup').style.display = 'none';
+}
+
+function showStep() {
+  const title = document.getElementById('popupTitle');
+  const content = document.getElementById('stepContent');
+  if (currentStep === 1) {
+    title.textContent = `طلب: ${currentProduct.title}`;
+    content.innerHTML = `
+      <input id="customerName" placeholder="أدخل الاسم الثلاثي" />
+      <button class="btn" onclick="nextStep()">التالي</button>
+    `;
+  } else if (currentStep === 2) {
+    title.textContent = `رقم واتساب للتواصل`;
+    content.innerHTML = `
+      <input id="customerWhatsApp" placeholder="أدخل رقم الواتساب" />
+      <button class="btn" onclick="nextStep()">التالي</button>
+    `;
+  } else if (currentStep === 3) {
+    title.textContent = `الدفع 1 دولار`;
+    content.innerHTML = `
+      <p>امسح الشيفرة للدفع</p>
+      <img class="qr-img" src="https://c.top4top.io/p_3512ytqp71.jpg" alt="شيفرة الدفع" />
+      <button class="btn" onclick="paymentDone()">تم الدفع</button>
+    `;
+  }
+}
+
+function nextStep() {
+  if (currentStep === 1) {
+    const val = document.getElementById('customerName').value.trim();
+    if (!val) { alert('أدخل الاسم الثلاثي'); return; }
+    customerName = val;
+    currentStep++;
+  } else if (currentStep === 2) {
+    const val = document.getElementById('customerWhatsApp').value.trim();
+    if (!val) { alert('أدخل رقم الواتساب'); return; }
+    customerWhatsApp = val;
+    currentStep++;
+  }
+  showStep();
+}
+
+function paymentDone() {
+  document.getElementById('checkmark').style.display = 'flex';
+  document.getElementById('stepContent').style.display = 'none';
+  setTimeout(() => {
+    sendOrder();
+    document.getElementById('stepContent').style.display = 'block';
+    document.getElementById('checkmark').style.display = 'none';
+  }, 2000);
+}
+
+function sendOrder() {
+  const subject = encodeURIComponent('طلب جديد');
+  const body = encodeURIComponent(
+    `المنتج: ${currentProduct.title}\n` +
+    `السعر: ${currentProduct.price.toFixed(2)} USD\n` +
+    `الاسم: ${customerName}\n` +
+    `واتساب: ${customerWhatsApp}`
+  );
+
+  // رابط Gmail للتطبيق على الهاتف
+  const gmailAppLink = `googlegmail://co?to=${encodeURIComponent(ownerEmail)}&subject=${subject}&body=${body}`;
+  // رابط واتساب
+  const whatsappLink = `https://wa.me/${ownerWhatsApp.replace('+', '')}?text=${body}`;
+
+  if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    // فتح واتساب أولاً
+    window.location.href = whatsappLink;
+    // ثم بعد قليل فتح Gmail
+    setTimeout(() => { window.location.href = gmailAppLink; }, 1500);
+  } else {
+    // على الكمبيوتر فتح Gmail
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ownerEmail)}&su=${subject}&body=${body}`, '_blank');
+  }
+
+  const order = {
+    product: currentProduct.title,
+    price: currentProduct.price.toFixed(2),
+    name: customerName,
+    whatsapp: customerWhatsApp
+  };
+  sentOrders.push(order);
+  localStorage.setItem('sentOrders', JSON.stringify(sentOrders));
+  updateCartCount();
+  closeOrderPopup();
+}
+
+function updateCartCount() {
+  const count = sentOrders.length;
+  document.getElementById('cartCount').textContent = count;
+}
+
+function showOrdersPopup() {
+  const ordersPopup = document.getElementById('ordersListPopup');
+  const ordersList = document.getElementById('ordersList');
+  if (sentOrders.length === 0) {
+    ordersList.innerHTML = '<p>لا توجد طلبات حتى الآن.</p>';
+  } else {
+    ordersList.innerHTML = '';
+    sentOrders.forEach((order, idx) => {
+      ordersList.innerHTML += `<p><strong>طلب #${idx + 1}:</strong><br>
+        المنتج: ${order.product}<br>
+        السعر: ${order.price} USD<br>
+        الاسم: ${order.name}<br>
+        واتساب: ${order.whatsapp}
+      </p>`;
+    });
+  }
+  ordersPopup.style.display = 'flex';
+}
+
+function closeOrdersPopup() {
+  document.getElementById('ordersListPopup').style.display = 'none';
+}
+
+window.onload = () => {
+  renderProducts();
+  updateCartCount();
+};
+</script>
+</body>
+</html>
     <button class="close-btn" onclick="closeOrderPopup()">×</button>
     <h3 id="popupTitle">طلب المنتج</h3>
     <div id="stepContent"></div>
