@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="تطوير الموقع بواصة مصعب خلف لايا استفسار او خلل تواصل وتساب +994401888888">
-<meta property="og:description" content="تم تطوير الموقع بواصة مصعب خلف لايا استفسار او خلل تواصل وتساب +994401888888">
+<meta property="og:title" content="تطوير الموقع بواسطة مصعب خلف لايا استفسار او خلل تواصل واتساب +994401888888">
+<meta property="og:description" content="تم تطوير الموقع بواسطة مصعب خلف لايا استفسار او خلل تواصل واتساب +994401888888">
 <meta property="og:image" content="https://i.top4top.io/p_3512q9l5c1.jpg">
 <meta property="og:url" content="https://example.com">
 <meta property="og:type" content="website">
@@ -33,7 +33,7 @@
   .popup { background: #fff; border-radius: 12px; padding: 20px; max-width: 400px; width: 90%; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); text-align: center; position: relative; }
   .popup h3 { margin-top: 0; }
   .popup input { width: 100%; padding: 8px; margin: 10px 0 16px; border-radius: 8px; border: 1px solid #ccc; }
-  .qr-img { width: 200px; max-width: 80%; height: auto; display: block; margin: 10px auto; border-radius: 12px; }
+  .qr-img { max-width: 150px; margin: 10px auto 16px; display: block; }
   .checkmark { display: none; width: 80px; height: 80px; border-radius: 50%; align-items: center; justify-content: center; background: #4CAF50; margin: 20px auto; }
   .checkmark svg { width: 50px; height: 50px; stroke: white; stroke-width: 4; fill: none; stroke-dasharray: 48; stroke-dashoffset: 48; animation: draw 1s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0; } }
@@ -179,33 +179,19 @@ function paymentDone() {
 }
 
 function sendOrder() {
-  const body = encodeURIComponent(
-    `🛍️ *طلب جديد* 🛍️\n` +
-    `━━━━━━━━━━━━━━\n` +
-    `📦 *المنتج:* ${currentProduct.title}\n` +
-    `💵 *السعر:* ${currentProduct.price.toFixed(2)} USD\n` +
-    `👤 *الاسم:* ${customerName}\n` +
-    `📱 *واتساب العميل:* ${customerWhatsApp}\n` +
-    `⚠️ لم يتم دفع أي رسوم للمالك\n` +
-    `━━━━━━━━━━━━━━\n` +
-    `شكراً لطلبك ❤️`
-  );
+  const formattedText = `🛍️ *طلب جديد* 🛍️\n━━━━━━━━━━━━━━\n📦 *المنتج:* ${currentProduct.title}\n💵 *السعر:* ${currentProduct.price.toFixed(2)} USD\n👤 *الاسم:* ${customerName}\n📱 *واتساب العميل:* ${customerWhatsApp}\n⚠️ لم يتم دفع أي رسوم للمالك\n━━━━━━━━━━━━━━\nشكراً لطلبك ❤️`;
 
-  // رابط واتساب
-  const whatsappLink = `https://wa.me/${ownerWhatsApp.replace('+', '')}?text=${body}`;
-
+  const whatsappLink = `https://wa.me/${ownerWhatsApp.replace('+','')}?text=${encodeURIComponent(formattedText)}`;
+  const gmailAppLink = `googlegmail://co?to=${encodeURIComponent(ownerEmail)}&subject=${encodeURIComponent('طلب جديد')}&body=${encodeURIComponent(formattedText)}`;
+  
   if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
     window.location.href = whatsappLink;
+    setTimeout(() => { window.location.href = gmailAppLink; }, 1500);
   } else {
-    window.open(whatsappLink, '_blank');
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(ownerEmail)}&su=${encodeURIComponent('طلب جديد')}&body=${encodeURIComponent(formattedText)}`, '_blank');
   }
 
-  const order = {
-    product: currentProduct.title,
-    price: currentProduct.price.toFixed(2),
-    name: customerName,
-    whatsapp: customerWhatsApp
-  };
+  const order = { product: currentProduct.title, price: currentProduct.price.toFixed(2), name: customerName, whatsapp: customerWhatsApp };
   sentOrders.push(order);
   localStorage.setItem('sentOrders', JSON.stringify(sentOrders));
   updateCartCount();
@@ -213,8 +199,7 @@ function sendOrder() {
 }
 
 function updateCartCount() {
-  const count = sentOrders.length;
-  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartCount').textContent = sentOrders.length;
 }
 
 function showOrdersPopup() {
