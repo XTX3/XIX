@@ -1,39 +1,357 @@
+<!-- الكود كامل مع التعديلات المطلوبة -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="تطوير الموقع بواسطة مصعب خلف لايا استفسار او خلل تواصل واتساب +994401888888">
-<meta property="og:description" content="تم تطوير الموقع بواسطة مصعب خلف لايا استفسار او خلل تواصل واتساب +994401888888">
-<meta property="og:image" content="https://i.top4top.io/p_3512q9l5c1.jpg">
-<meta property="og:url" content="https://example.com">
-<meta property="og:type" content="website">
-<title>متجر XIX</title>
+<title>متجر XIX - شحن التطبيقات</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --accent: #007bff;
-    --bg: #f6f8fb;
-    --card: #fff;
-    --overlay: rgba(0, 0, 0, 0.6);
+:root {
+  --accent: #007bff;
+  --bg: #f6f8fb;
+  --card: #fff;
+  --overlay: rgba(0, 0, 0, 0.6);
+}
+/* جميع التنسيقات السابقة كما هي */
+* { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+body { margin: 0; background: var(--bg); color: #222; }
+header { background: var(--accent); color: #fff; padding: 18px; text-align: center; font-size: 20px; font-weight: bold; }
+.container { max-width: 1100px; margin: auto; padding: 16px; }
+.section-buttons { text-align: center; margin-bottom: 20px; position: relative; }
+.section-buttons button { margin: 0 8px; padding: 10px 16px; border: none; border-radius: 8px; background: var(--accent); color: #fff; font-weight: bold; cursor: pointer; position: relative; z-index:1; }
+.section-buttons button.inactive { background: #888; }
+.products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.card { background: var(--card); border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06); padding: 12px; text-align: center; }
+.card img { width: 100%; height: 150px; object-fit: contain; }
+.price { color: var(--accent); font-weight: 700; margin: 8px 0; }
+.btn { padding: 8px 12px; border: none; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; }
+.cart-icon { position: fixed; top: 20px; left: 20px; background: transparent; color: #000; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); z-index: 10000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 30px; user-select: none; transition: background-color 0.3s ease; }
+.cart-icon:hover { background-color: #eee; }
+#cartCount { background: #e74c3c; border-radius: 100%; padding: 2px 1px; font-size: 10px; position: absolute; top: 1px; left: 30px; min-width: 25px; text-align: center; font-weight: 900; color: #fff; user-select: none; }
+.overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--overlay); justify-content: center; align-items: center; z-index: 9999; }
+.popup { background: #fff; border-radius: 12px; padding: 20px; max-width: 400px; width: 90%; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); text-align: center; position: relative; }
+.popup h3 { margin-top: 0; }
+.popup input { width: 45%; padding: 8px; margin: 10px 4px; border-radius: 8px; border: 1px solid #ccc; display: inline-block; text-align: center; }
+.qr-img { max-width: 150px; margin: 10px auto 16px; display: block; }
+.checkmark { display: none; width: 80px; height: 80px; border-radius: 50%; align-items: center; justify-content: center; background: #4CAF50; margin: 20px auto; }
+.checkmark svg { width: 50px; height: 50px; stroke: white; stroke-width: 4; fill: none; stroke-dasharray: 48; stroke-dashoffset: 48; animation: draw 1s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.close-btn { position: absolute; top: 10px; left: 12px; background: #eee; border-radius: 50%; width: 28px; height: 28px; line-height: 28px; font-weight: bold; color: #444; cursor: pointer; border: none; }
+#ordersListPopup .popup { background: #222; color: #eee; max-width: 500px; border-radius: 12px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); font-size: 15px; line-height: 1.5; text-align: right; direction: rtl; }
+#ordersListPopup .popup h3 { color: #fff; margin-bottom: 15px; font-weight: 800; text-align: center; }
+#ordersListPopup .orders-list { background: #333; border-radius: 10px; padding: 12px; max-height: 320px; overflow-y: auto; border: 1px solid #555; }
+#ordersListPopup .orders-list .order-item { border-bottom: 1px solid #444; padding: 8px 0; color: #ddd; display: flex; flex-direction: column; gap:4px; }
+#ordersListPopup .orders-list .order-item strong { color: #f39c12; }
+#ordersListPopup .orders-list .order-item button { background:#e74c3c; border:none; padding:6px 10px; border-radius:6px; color:#fff; cursor:pointer; width:100px; align-self:flex-start; }
+#ordersListPopup .close-btn { background: #555; color: #eee; font-weight: 900; font-size: 18px; border-radius: 50%; width: 32px; height: 32px; top: 12px; left: 12px; box-shadow: 0 0 10px #f39c12; transition: background-color 0.3s ease; }
+#ordersListPopup .close-btn:hover { background: #f39c12; color: #222; }
+.moving-dot { position: absolute; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; z-index: 1000; pointer-events: none; transition: transform 0.6s ease; }
+</style>
+</head>
+<body>
+<header>متجر XIX</header>
+
+<div class="container">
+  <div class="section-buttons">
+    <button onclick="showSection('apps')">شحن التطبيقات</button>
+    <button onclick="showSection('appProblems')">مشاكل التطبيقات</button>
+  </div>
+
+  <div class="products" id="apps"></div>
+  <div class="products" id="appProblems" style="display:none;"></div>
+</div>
+
+<div class="cart-icon" id="cartIcon" title="عرض الطلبات المرسلة" onclick="showOrdersPopup()">
+  🛒
+  <span id="cartCount">0</span>
+</div>
+
+<div class="overlay" id="orderPopup">
+  <div class="popup">
+    <button class="close-btn" onclick="closeOrderPopup()">×</button>
+    <h3 id="popupTitle">طلب المنتج</h3>
+    <div id="stepContent"></div>
+    <div class="checkmark" id="checkmark">
+      <svg viewBox="0 0 52 52"><path d="M14 27 l7 7 l17 -17"></path></svg>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ordersListPopup" style="display:none;">
+  <div class="popup">
+    <button class="close-btn" onclick="closeOrdersPopup()">×</button>
+    <h3>الطلبات المرسلة</h3>
+    <div id="ordersList" class="orders-list">لا توجد طلبات حتى الآن.</div>
+  </div>
+</div>
+
+<script>
+const ownerEmail = 'uusu.06@gmail.com';
+const ownerWhatsApp = '+994401888888';
+let currentProduct = null;
+let currentStep = 1;
+let customerName = '';
+let customerWhatsApp = '';
+let coinsAmount = 0;
+let coinsPrice = 0;
+let sentOrders = JSON.parse(localStorage.getItem('sentOrders')) || [];
+
+const appsProducts = [
+  { id: 'app1', title: 'أهلا شات', pricePer1000: 1.0, img: 'https://i.top4top.io/p_3512a1.jpg' },
+  { id: 'app2', title: 'جواكر', pricePer1000: 1.2, img: 'https://i.top4top.io/p_3512b2.jpg' },
+  { id: 'app3', title: 'تطبيق كوينز إضافي', pricePer1000: 0.8, img: 'https://i.top4top.io/p_3512c3.jpg' }
+];
+
+const appProblemsProducts = [
+  { id: 1, title: 'استرجاع شام كاش', price: 20.00, img: 'https://f.top4top.io/p_3512o1stv1.jpg' },
+  { id: 2, title: 'طريقة استرجاع حسابات الشام', price: 100.00, img: 'https://f.top4top.io/p_3512o1stv1.jpg' },
+  { id: 3, title: 'فك حظر تيك توك', price: 3.00, img: 'https://j.top4top.io/p_3512tjkcr1.jpg' },
+  { id: 4, title: 'واتساب معدل', price: 3.00, img: 'https://l.top4top.io/p_3512bcblf1.jpg' },
+  { id: 5, title: 'فك حضر واتساب', price: 5.00, img: 'https://j.top4top.io/p_3512i415e1.jpg' },
+  { id: 6, title: 'استرجاع بريد الاكتروني', price: 20.00, img: 'https://c.top4top.io/p_3512g2d7j1.jpg' },
+  { id: 7, title: 'استرجاع صور محذوفه', price: 51.99, img: 'https://a.top4top.io/p_3512p1gzm1.jpg' },
+  { id: 8, title: 'طلب حل ايا مشكله', price: 0.99, img: 'https://f.top4top.io/p_35120u6bd1.jpg' }
+];
+
+function renderProducts() {
+  const appsEl = document.getElementById('apps');
+  appsEl.innerHTML = '';
+  appsProducts.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.title}" />
+      <h4>${p.title}</h4>
+      <div class="price">سعر 1000 كوينز: ${p.pricePer1000} USD</div>
+      <button class="btn" onclick="startOrder('${p.id}', 'apps')">شحن</button>
+    `;
+    appsEl.appendChild(card);
+  });
+
+  const problemsEl = document.getElementById('appProblems');
+  problemsEl.innerHTML = '';
+  appProblemsProducts.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.title}" />
+      <h4>${p.title}</h4>
+      <div class="price">السعر: ${p.price} USD</div>
+      <button class="btn" onclick="startOrder('${p.id}', 'appProblems')">طلب</button>
+    `;
+    problemsEl.appendChild(card);
+  });
+}
+
+const btnApps = document.querySelector('.section-buttons button:nth-child(1)');
+const btnProblems = document.querySelector('.section-buttons button:nth-child(2)');
+btnProblems.classList.add('inactive');
+
+function animateButtonTransition(fromBtn, toBtn){
+  const dot = document.createElement('div');
+  dot.className = 'moving-dot';
+  document.body.appendChild(dot);
+
+  const fromRect = fromBtn.getBoundingClientRect();
+  const toRect = toBtn.getBoundingClientRect();
+
+  dot.style.left = (fromRect.left + fromRect.width/2 - 6) + 'px';
+  dot.style.top = (fromRect.top + fromRect.height/2 - 6) + 'px';
+
+  requestAnimationFrame(()=>{
+    dot.style.transform = `translate(${toRect.left - fromRect.left}px, ${toRect.top - fromRect.top}px)`;
+  });
+
+  dot.addEventListener('transitionend',()=>{
+    fromBtn.classList.add('inactive');
+    toBtn.classList.remove('inactive');
+    dot.remove();
+  });
+}
+
+function showSection(sectionId){
+  const appsEl = document.getElementById('apps');
+  const problemsEl = document.getElementById('appProblems');
+
+  if(sectionId==='apps'){
+    appsEl.style.display = 'grid';
+    problemsEl.style.display = 'none';
+    animateButtonTransition(btnProblems, btnApps);
+  } else {
+    appsEl.style.display = 'none';
+    problemsEl.style.display = 'grid';
+    animateButtonTransition(btnApps, btnProblems);
   }
-  * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-  body { margin: 0; background: var(--bg); color: #222; }
-  header { background: var(--accent); color: #fff; padding: 18px; text-align: center; font-size: 20px; font-weight: bold; }
-  .container { max-width: 1100px; margin: auto; padding: 16px; }
-  .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-  .card { background: var(--card); border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06); padding: 12px; text-align: center; }
-  .card img { width: 100%; height: 150px; object-fit: contain; }
-  .price { color: var(--accent); font-weight: 700; margin: 8px 0; }
-  .btn { padding: 8px 12px; border: none; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; }
-  .cart-icon { position: fixed; top: 20px; left: 20px; background: transparent; color: #000; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); z-index: 10000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 30px; user-select: none; transition: background-color 0.3s ease; }
-  .cart-icon:hover { background-color: #eee; }
-  #cartCount { background: #e74c3c; border-radius: 100%; padding: 2px 1px; font-size: 10px; position: absolute; top: 1px; left: 30px; min-width: 25px; text-align: center; font-weight: 900; color: #fff; user-select: none; }
-  .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--overlay); justify-content: center; align-items: center; z-index: 9999; }
-  .popup { background: #fff; border-radius: 12px; padding: 20px; max-width: 400px; width: 90%; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); text-align: center; position: relative; }
-  .popup h3 { margin-top: 0; }
-  .popup input { width: 100%; padding: 8px; margin: 10px 0 16px; border-radius: 8px; border: 1px solid #ccc; }
-  .qr-img { max-width: 150px; margin: 10px auto 16px; display: block; }
+}
+
+function startOrder(productId, section) {
+  if(section==='apps'){
+    currentProduct = appsProducts.find(p=>p.id===productId);
+    currentStep=1; coinsAmount=0; coinsPrice=0;
+  }else{
+    currentProduct = appProblemsProducts.find(p=>p.id===productId);
+    currentStep=1;
+  }
+  customerName=''; customerWhatsApp='';
+  document.getElementById('checkmark').style.display='none';
+  document.getElementById('stepContent').style.display='block';
+  showStep(section);
+  document.getElementById('orderPopup').style.display='flex';
+}
+
+function showStep(section){
+  const title = document.getElementById('popupTitle');
+  const content = document.getElementById('stepContent');
+  if(section==='apps'){
+    if(currentStep===1){
+      title.textContent = `شحن: ${currentProduct.title}`;
+      content.innerHTML=`
+        <input type="number" id="coinsInput" placeholder="عدد الكوينز" />
+        <input type="text" id="priceOutput" placeholder="السعر" readonly />
+        <button class="btn" onclick="nextStep('apps')">التالي</button>
+      `;
+      document.getElementById('coinsInput').addEventListener('input', ()=>{
+        let val=parseInt(document.getElementById('coinsInput').value) || 0;
+        coinsAmount=val;
+        coinsPrice=(val/1000)*currentProduct.pricePer1000;
+        document.getElementById('priceOutput').value=coinsPrice.toFixed(2)+' USD';
+      });
+    } else if(currentStep===2){
+      title.textContent = `أدخل معلوماتك`;
+      content.innerHTML=`
+        <input id="customerName" placeholder="الاسم الثلاثي" />
+        <input id="customerWhatsApp" placeholder="رقم واتساب" />
+        <button class="btn" onclick="nextStep('apps')">التالي</button>
+      `;
+    } else if(currentStep===3){
+      title.textContent = `الدفع`;
+      content.innerHTML=`
+        <p>امسح الشيفرة للدفع</p>
+        <img class="qr-img" src="https://c.top4top.io/p_3512ytqp71.jpg" alt="شيفرة الدفع" />
+        <button class="btn" onclick="paymentDone('apps')">تم الدفع</button>
+      `;
+    }
+  } else if(section==='appProblems'){
+    if(currentStep===1){
+      title.textContent = `طلب: ${currentProduct.title}`;
+      content.innerHTML=`
+        <input id="customerName" placeholder="الاسم الثلاثي" />
+        <input id="customerWhatsApp" placeholder="رقم واتساب" />
+        <button class="btn" onclick="nextStep('appProblems')">التالي</button>
+      `;
+    } else if(currentStep===2){
+      title.textContent='الدفع';
+      content.innerHTML=`
+        <p>امسح الشيفرة للدفع</p>
+        <img class="qr-img" src="https://c.top4top.io/p_3512ytqp71.jpg" alt="شيفرة الدفع" />
+        <button class="btn" onclick="paymentDone('appProblems')">تم الدفع</button>
+      `;
+    }
+  }
+}
+
+function nextStep(section){
+  if(section==='apps'){
+    if(currentStep===1){ currentStep++; }
+    else if(currentStep===2){
+      const nameVal=document.getElementById('customerName').value.trim();
+      const whatsappVal=document.getElementById('customerWhatsApp').value.trim();
+      if(!nameVal || !whatsappVal){ alert('أدخل الاسم ورقم الواتساب'); return; }
+      customerName=nameVal; customerWhatsApp=whatsappVal;
+      currentStep++;
+    }
+  } else if(section==='appProblems'){
+    if(currentStep===1){
+      const nameVal=document.getElementById('customerName').value.trim();
+      const whatsappVal=document.getElementById('customerWhatsApp').value.trim();
+      if(!nameVal || !whatsappVal){ alert('أدخل الاسم ورقم الواتساب'); return; }
+      customerName=nameVal; customerWhatsApp=whatsappVal;
+      currentStep++;
+    }
+  }
+  showStep(section);
+}
+
+function paymentDone(section){
+  document.getElementById('checkmark').style.display='flex';
+  document.getElementById('stepContent').style.display='none';
+  setTimeout(()=>{
+    sendOrder(section);
+    document.getElementById('stepContent').style.display='block';
+    document.getElementById('checkmark').style.display='none';
+  },2000);
+}
+
+function sendOrder(section){
+  const orderDate = new Date().toLocaleString();
+  let text='';
+  if(section==='apps'){
+    text=`🛍️ *طلب شحن تطبيقات*\n━━━━━━━━━━━━━━\n📦 *التطبيق:* ${currentProduct.title}\n💰 *عدد الكوينز:* ${coinsAmount}\n💵 *السعر:* ${coinsPrice.toFixed(2)} USD\n👤 *الاسم:* ${customerName}\n📱 *واتساب العميل:* ${customerWhatsApp}\n📅 *تاريخ الطلب:* ${orderDate}\n━━━━━━━━━━━━━━\nشكراً لطلبك ❤️`;
+    sentOrders.push({product: currentProduct.title, coins: coinsAmount, price: coinsPrice.toFixed(2), name: customerName, whatsapp: customerWhatsApp, date: orderDate});
+  } else {
+    text=`🛍️ *طلب خدمة*\n━━━━━━━━━━━━━━\n📦 *الخدمة:* ${currentProduct.title}\n💵 *السعر:* ${currentProduct.price} USD\n👤 *الاسم:* ${customerName}\n📱 *واتساب العميل:* ${customerWhatsApp}\n📅 *تاريخ الطلب:* ${orderDate}\n━━━━━━━━━━━━━━\nشكراً لطلبك ❤️`;
+    sentOrders.push({product: currentProduct.title, price: currentProduct.price, name: customerName, whatsapp: customerWhatsApp, date: orderDate});
+  }
+  localStorage.setItem('sentOrders', JSON.stringify(sentOrders));
+
+  // محاولة فتح Gmail الرسمي
+  try {
+    const subject = encodeURIComponent('طلب جديد من متجر XIX');
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${ownerEmail}&su=${subject}&body=${encodeURIComponent(text)}`;
+    const gmailWindow = window.open(gmailUrl,'_blank');
+    if(!gmailWindow || gmailWindow.closed || typeof gmailWindow.closed=='undefined'){
+      // إذا لم يتم فتح Gmail، اذهب إلى WhatsApp
+      const waUrl = `https://web.whatsapp.com/send?phone=${ownerWhatsApp}&text=${encodeURIComponent(text)}`;
+      window.open(waUrl,'_blank');
+    }
+  } catch(e){
+    // أي خطأ، نفتح WhatsApp
+    const waUrl = `https://web.whatsapp.com/send?phone=${ownerWhatsApp}&text=${encodeURIComponent(text)}`;
+    window.open(waUrl,'_blank');
+  }
+
+  updateCartCount();
+}
+
+function updateCartCount(){ document.getElementById('cartCount').textContent=sentOrders.length; }
+
+function showOrdersPopup(){
+  const popup=document.getElementById('ordersListPopup');
+  const listEl=document.getElementById('ordersList');
+  if(sentOrders.length===0){ listEl.innerHTML='لا توجد طلبات حتى الآن.'; }
+  else{
+    listEl.innerHTML='';
+    sentOrders.forEach((o,index)=>{
+      const div=document.createElement('div');
+      div.className='order-item';
+      let info=`📦 ${o.product || ''}\n`;
+      if(o.coins) info+=`💰 ${o.coins} كوينز\n`;
+      info+=`💵 ${o.price} USD\n👤 ${o.name}\n📱 ${o.whatsapp}\n📅 ${o.date || ''}`;
+      div.innerHTML=`<strong>${info.replace(/\n/g,'<br>')}</strong>
+      <button onclick="deleteOrder(${index})">حذف</button>`;
+      listEl.appendChild(div);
+    });
+  }
+  popup.style.display='flex';
+}
+
+function closeOrderPopup(){ document.getElementById('orderPopup').style.display='none'; }
+function closeOrdersPopup(){ document.getElementById('ordersListPopup').style.display='none'; }
+
+function deleteOrder(index){
+  sentOrders.splice(index,1);
+  localStorage.setItem('sentOrders', JSON.stringify(sentOrders));
+  showOrdersPopup();
+  updateCartCount();
+}
+
+// أول تشغيل
+renderProducts();
+updateCartCount();
+</script>
+</body>
+</html>
   .checkmark { display: none; width: 80px; height: 80px; border-radius: 50%; align-items: center; justify-content: center; background: #4CAF50; margin: 20px auto; }
   .checkmark svg { width: 50px; height: 50px; stroke: white; stroke-width: 4; fill: none; stroke-dasharray: 48; stroke-dashoffset: 48; animation: draw 1s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0; } }
