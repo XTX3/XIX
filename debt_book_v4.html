@@ -1,0 +1,288 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans)}
+.sr-only{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.app{padding:12px;direction:rtl;max-width:480px;margin:auto}
+.hdr{text-align:center;padding:16px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);margin-bottom:12px}
+.hdr-icon{font-size:28px;color:#7F77DD;display:block;margin-bottom:4px}
+.hdr h1{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.hdr p{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.stat{border-radius:var(--border-radius-lg);padding:12px 10px;border:0.5px solid;text-align:center}
+.stat .slbl{font-size:10px;font-weight:500;letter-spacing:.04em;margin-bottom:5px}
+.stat .sval{font-size:16px;font-weight:500;word-break:break-all}
+.stat .ssub{font-size:10px;margin-top:3px}
+.s-net{grid-column:1/-1}
+.m-red{background:#FCEBEB;border-color:#F09595}.m-red .slbl,.m-red .ssub{color:#A32D2D}.m-red .sval{color:#791F1F}
+.m-teal{background:#E1F5EE;border-color:#5DCAA5}.m-teal .slbl,.m-teal .ssub{color:#0F6E56}.m-teal .sval{color:#085041}
+.m-purple{background:#EEEDFE;border-color:#AFA9EC}.m-purple .slbl,.m-purple .ssub{color:#534AB7}.m-purple .sval{color:#3C3489}
+.charts-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px}
+.card-full{grid-column:1/-1}
+.ctitle{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ctitle i{font-size:15px}
+.field{margin-bottom:9px}
+.field label{font-size:11px;color:var(--color-text-secondary);display:block;margin-bottom:4px}
+.field input,.field select{width:100%;padding:9px 10px;font-size:14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+.field input:focus,.field select:focus{outline:none;border-color:#7F77DD}
+.form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.btn-add{width:100%;padding:11px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;background:#7F77DD;color:#fff;border:none;margin-top:4px}
+.btn-add:active{opacity:.85}
+.tabs{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:2px}
+.tab{padding:6px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);font-weight:500;white-space:nowrap;flex-shrink:0}
+.tab.active{background:#7F77DD;color:#fff;border-color:transparent}
+.debt-list{display:flex;flex-direction:column;gap:8px}
+.debt-item{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px;transition:opacity .3s}
+.debt-item.is-paid{opacity:.6;border-color:var(--color-border-tertiary)}
+.di-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.di-name{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.di-name.struck{text-decoration:line-through;color:var(--color-text-secondary)}
+.di-badge{font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;flex-shrink:0}
+.b-red{background:#FCEBEB;color:#791F1F}
+.b-teal{background:#E1F5EE;color:#085041}
+.b-done{background:#EEEDFE;color:#3C3489}
+.di-amounts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-bottom:8px}
+.di-amt .albl{font-size:10px;color:var(--color-text-secondary);margin-bottom:2px}
+.di-amt .aval{font-size:13px;font-weight:500;word-break:break-all}
+.prog-wrap{height:4px;border-radius:3px;background:var(--color-background-secondary);margin-bottom:8px;overflow:hidden}
+.prog-bar{height:4px;border-radius:3px}
+.di-note{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
+.di-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.pay-inp{flex:1;min-width:70px;padding:8px 9px;font-size:13px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+.pay-inp:focus{outline:none;border-color:#1D9E75}
+.btn-pay{padding:8px 12px;font-size:13px;border-radius:var(--border-radius-md);border:none;cursor:pointer;background:#1D9E75;color:#fff;font-weight:500;white-space:nowrap}
+.btn-pay:active{opacity:.85}
+.btn-fullpay{padding:8px 12px;font-size:13px;border-radius:var(--border-radius-md);border:none;cursor:pointer;background:#085041;color:#fff;font-weight:500;white-space:nowrap}
+.btn-fullpay:active{opacity:.85}
+.btn-del{padding:8px 10px;font-size:13px;border-radius:var(--border-radius-md);border:none;cursor:pointer;background:#FCEBEB;color:#791F1F}
+.btn-del:active{opacity:.85}
+.done-badge{font-size:12px;padding:5px 10px;border-radius:var(--border-radius-md);background:#EEEDFE;color:#3C3489;font-weight:500}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--color-text-secondary);font-size:13px}
+.empty i{font-size:32px;display:block;margin-bottom:8px}
+.leg{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.leg span{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-secondary)}
+.leg-dot{width:8px;height:8px;border-radius:2px;display:inline-block;flex-shrink:0}
+.di-meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.di-date{font-size:10px;color:var(--color-text-secondary)}
+</style>
+
+<div class="app" dir="rtl">
+<h2 class="sr-only">دفتر الديون بالليرة التركية</h2>
+
+<div class="hdr">
+  <i class="ti ti-notebook hdr-icon" aria-hidden="true"></i>
+  <h1>دفتر الديون</h1>
+  <p>ليرة تركية ₺ — حفظ محلي تلقائي</p>
+</div>
+
+<div class="stats">
+  <div class="stat m-red">
+    <div class="slbl"><i class="ti ti-arrow-down" aria-hidden="true"></i> عليّ</div>
+    <div class="sval" id="s1">₺0</div>
+    <div class="ssub" id="s1c">0 سجل</div>
+  </div>
+  <div class="stat m-teal">
+    <div class="slbl"><i class="ti ti-arrow-up" aria-hidden="true"></i> على الزبائن</div>
+    <div class="sval" id="s2">₺0</div>
+    <div class="ssub" id="s2c">0 سجل</div>
+  </div>
+  <div class="stat m-purple s-net">
+    <div class="slbl"><i class="ti ti-scale" aria-hidden="true"></i> الصافي</div>
+    <div class="sval" id="s3">₺0</div>
+    <div class="ssub" id="s3l">متوازن</div>
+  </div>
+</div>
+
+<div class="charts-row">
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-chart-donut" aria-hidden="true" style="color:#7F77DD"></i> توزيع</div>
+    <div style="position:relative;height:130px"><canvas id="dc" role="img" aria-label="مخطط دائري للديون"></canvas></div>
+    <div class="leg" id="dleg"></div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><i class="ti ti-chart-bar" aria-hidden="true" style="color:#1D9E75"></i> أعلى الديون</div>
+    <div style="position:relative;height:130px"><canvas id="bc" role="img" aria-label="مخطط شريطي"></canvas></div>
+  </div>
+</div>
+
+<div class="card card-full" style="margin-bottom:12px">
+  <div class="ctitle"><i class="ti ti-circle-plus" aria-hidden="true" style="color:#7F77DD"></i> إضافة دين</div>
+  <div class="form-row">
+    <div class="field"><label>الاسم</label><input id="fN" type="text" placeholder="اسم الشخص"></div>
+    <div class="field"><label>المبلغ ₺</label><input id="fA" type="number" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
+  </div>
+  <div class="field"><label>نوع الدين</label>
+    <select id="fT">
+      <option value="on_me">دين عليّ — أنا المدين</option>
+      <option value="on_them">دين على الزبون — يسدد لي</option>
+    </select>
+  </div>
+  <div class="field"><label>ملاحظة (اختياري)</label><input id="fNote" type="text" placeholder="سبب الدين..."></div>
+  <button class="btn-add" onclick="addDebt()"><i class="ti ti-check" aria-hidden="true"></i> إضافة</button>
+</div>
+
+<div class="card card-full">
+  <div class="ctitle"><i class="ti ti-list" aria-hidden="true" style="color:#378ADD"></i> السجلات</div>
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('all',this)">الكل</button>
+    <button class="tab" onclick="setTab('on_me',this)">عليّ</button>
+    <button class="tab" onclick="setTab('on_them',this)">على الزبائن</button>
+    <button class="tab" onclick="setTab('paid',this)">مسددة</button>
+  </div>
+  <div class="debt-list" id="dList"></div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let debts=[];
+try{debts=JSON.parse(localStorage.getItem('db_tr4')||'[]');}catch(e){}
+let curTab='all';
+let DC,BC;
+const fmt=v=>'₺'+parseFloat(v).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function save(){try{localStorage.setItem('db_tr4',JSON.stringify(debts));}catch(e){}}
+
+function addDebt(){
+  const n=document.getElementById('fN').value.trim();
+  const a=parseFloat(document.getElementById('fA').value);
+  const t=document.getElementById('fT').value;
+  const note=document.getElementById('fNote').value.trim();
+  if(!n||!a||a<=0){alert('يرجى إدخال الاسم والمبلغ');return;}
+  debts.push({id:Date.now(),name:n,amount:a,paid:0,type:t,note,date:new Date().toLocaleDateString('tr-TR'),history:[]});
+  save();render();
+  ['fN','fA','fNote'].forEach(id=>document.getElementById(id).value='');
+}
+
+function payDebt(id){
+  const inp=document.getElementById('pi_'+id);
+  const val=parseFloat(inp.value);
+  if(!val||val<=0)return;
+  const d=debts.find(x=>x.id===id);
+  if(!d)return;
+  const rem=+(d.amount-d.paid).toFixed(2);
+  const p=Math.min(val,rem);
+  d.paid=+(d.paid+p).toFixed(2);
+  d.history.push({a:p,date:new Date().toLocaleDateString('tr-TR')});
+  inp.value='';
+  save();render();
+}
+
+function fullPay(id){
+  const d=debts.find(x=>x.id===id);
+  if(!d)return;
+  const rem=+(d.amount-d.paid).toFixed(2);
+  if(rem<=0)return;
+  d.paid=d.amount;
+  d.history.push({a:rem,date:new Date().toLocaleDateString('tr-TR'),full:true});
+  save();render();
+}
+
+function delDebt(id){
+  if(!confirm('حذف هذا السجل؟'))return;
+  debts=debts.filter(x=>x.id!==id);
+  save();render();
+}
+
+function setTab(t,el){
+  curTab=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function render(){
+  const active=debts.filter(d=>d.paid<d.amount);
+  const onMe=active.filter(d=>d.type==='on_me').reduce((s,d)=>s+(d.amount-d.paid),0);
+  const onThem=active.filter(d=>d.type==='on_them').reduce((s,d)=>s+(d.amount-d.paid),0);
+  const net=onThem-onMe;
+  document.getElementById('s1').textContent=fmt(onMe);
+  document.getElementById('s1c').textContent=active.filter(d=>d.type==='on_me').length+' سجل';
+  document.getElementById('s2').textContent=fmt(onThem);
+  document.getElementById('s2c').textContent=active.filter(d=>d.type==='on_them').length+' سجل';
+  document.getElementById('s3').textContent=(net>=0?'+':'')+fmt(net);
+  document.getElementById('s3l').textContent=net>0?'لصالحك':net<0?'عليك':'متوازن';
+
+  let filtered=debts;
+  if(curTab==='on_me') filtered=debts.filter(d=>d.type==='on_me'&&d.paid<d.amount);
+  else if(curTab==='on_them') filtered=debts.filter(d=>d.type==='on_them'&&d.paid<d.amount);
+  else if(curTab==='paid') filtered=debts.filter(d=>d.paid>=d.amount);
+
+  const list=document.getElementById('dList');
+  if(!filtered.length){
+    list.innerHTML='<div class="empty"><i class="ti ti-inbox" aria-hidden="true"></i>لا توجد سجلات</div>';
+  } else {
+    list.innerHTML=filtered.map(d=>{
+      const rem=+(d.amount-d.paid).toFixed(2);
+      const isPaid=rem<=0;
+      const pct=Math.min(100,Math.round((d.paid/d.amount)*100));
+      const barColor=d.type==='on_me'?'#E24B4A':'#1D9E75';
+      const typeBadge=d.type==='on_me'
+        ?'<span class="di-badge b-red">عليّ</span>'
+        :'<span class="di-badge b-teal">على الزبون</span>';
+      const nameClass='di-name'+(isPaid?' struck':'');
+      return `<div class="debt-item${isPaid?' is-paid':''}">
+        <div class="di-top">
+          <div class="${nameClass}">${d.name}</div>
+          ${typeBadge}
+        </div>
+        <div class="di-amounts">
+          <div class="di-amt"><div class="albl">الأصلي</div><div class="aval">${fmt(d.amount)}</div></div>
+          <div class="di-amt"><div class="albl">المدفوع</div><div class="aval" style="color:#0F6E56">${fmt(d.paid)}</div></div>
+          <div class="di-amt"><div class="albl">المتبقي</div><div class="aval" style="color:${isPaid?'#085041':'#791F1F'}">${isPaid?'مسدد':fmt(rem)}</div></div>
+        </div>
+        ${!isPaid?`<div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${barColor}"></div></div>`:''}
+        ${d.note?`<div class="di-note"><i class="ti ti-note" aria-hidden="true"></i> ${d.note}</div>`:''}
+        <div class="di-meta">
+          <div class="di-date"><i class="ti ti-calendar" aria-hidden="true"></i> ${d.date}${d.history.length?' · '+d.history.length+' تسديد':''}</div>
+        </div>
+        <div class="di-actions">
+          ${!isPaid
+            ?`<input class="pay-inp" type="number" id="pi_${d.id}" placeholder="₺ جزئي" min="0.01" step="0.01" inputmode="decimal">
+              <button class="btn-pay" onclick="payDebt(${d.id})" title="تسديد جزئي"><i class="ti ti-coin" aria-hidden="true"></i> سدّد</button>
+              <button class="btn-fullpay" onclick="fullPay(${d.id})" title="تسديد كامل"><i class="ti ti-circle-check" aria-hidden="true"></i> تم الدفع</button>`
+            :'<span class="done-badge"><i class="ti ti-circle-check" aria-hidden="true"></i> مكتمل</span>'}
+          <button class="btn-del" onclick="delDebt(${d.id})" aria-label="حذف"><i class="ti ti-trash" aria-hidden="true"></i></button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  updateCharts(onMe,onThem);
+}
+
+function updateCharts(onMe,onThem){
+  if(DC)DC.destroy();
+  if(BC)BC.destroy();
+  const isDark=matchMedia('(prefers-color-scheme:dark)').matches;
+  const tc=isDark?'#aaa':'#666';
+  const gc=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.05)';
+  const bdr=isDark?'#1a1a1a':'#fff';
+  DC=new Chart(document.getElementById('dc'),{
+    type:'doughnut',
+    data:{labels:['عليّ','على الزبائن'],
+      datasets:[{data:[onMe,onThem],backgroundColor:['#E24B4A','#1D9E75'],borderWidth:3,borderColor:bdr,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'68%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:i=>`${i.label}: ${fmt(i.raw)}`}}}}
+  });
+  document.getElementById('dleg').innerHTML=
+    `<span><span class="leg-dot" style="background:#E24B4A"></span>عليّ</span>
+     <span><span class="leg-dot" style="background:#1D9E75"></span>زبائن</span>`;
+  const grouped={};
+  debts.forEach(d=>{const r=+(d.amount-d.paid).toFixed(2);if(r>0) grouped[d.name]=(grouped[d.name]||0)+r;});
+  const sorted=Object.entries(grouped).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const pal=['#7F77DD','#E24B4A','#1D9E75','#EF9F27','#D4537E'];
+  BC=new Chart(document.getElementById('bc'),{
+    type:'bar',
+    data:{labels:sorted.map(x=>x[0]),
+      datasets:[{data:sorted.map(x=>x[1]),backgroundColor:pal.slice(0,sorted.length),borderWidth:0,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:i=>`${fmt(i.raw)}`}}},
+      scales:{
+        x:{ticks:{color:tc,font:{size:10},callback:v=>'₺'+Math.round(v).toLocaleString('tr-TR')},
+          grid:{color:gc},border:{display:false}},
+        y:{ticks:{color:tc,font:{size:11},maxTicksLimit:5},grid:{display:false},border:{display:false}}
+      }}
+  });
+}
+render();
+</script>
